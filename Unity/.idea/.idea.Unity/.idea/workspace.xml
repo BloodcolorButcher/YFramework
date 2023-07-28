@@ -12,9 +12,11 @@
   </component>
   <component name="HighlightingSettingsPerFile">
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/ServerTest.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/UI/MainPanel.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/YFramework/Helper/JsonHelper.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/YFramework/MemoryPack/MemoryPackTest.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.cysharp.memorypack@9aa51ce1e8/Runtime/MemoryPack.Core/MemoryPackSerializer.Serialize.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/YFramework/Scripts/PersistentData/Model/AppSettingData.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.cysharp.memorypack@9aa51ce1e8/Runtime/MemoryPack.Core/MemoryPackSerializer.Serialize.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.cysharp.memorypack@9aa51ce1e8/Runtime/MemoryPack.Core/MemoryPackWriter.Unmanaged.cs" root0="SKIP_HIGHLIGHTING" />
   </component>
   <component name="ProjectId" id="2TBPTr5neAU8vFFeg1GEuaysqKh" />
@@ -97,7 +99,7 @@
       <updated>1690513511494</updated>
       <workItem from="1690513512571" duration="1028000" />
       <workItem from="1690514558664" duration="894000" />
-      <workItem from="1690515670887" duration="7676000" />
+      <workItem from="1690515670887" duration="10102000" />
     </task>
     <servers />
   </component>
