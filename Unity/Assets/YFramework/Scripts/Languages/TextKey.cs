@@ -1,0 +1,11 @@
+public enum TextKey
+{
+	TEXT_MP_ACTIONS=0,
+	TEXT_MP_MISSIONS=1,
+	TEXT_MP_PROGRAM=2,
+	TEXT_MP_CONNECTBlUE=3,
+	TEXT_GUIDE_Ble=4,
+	TEXT_GUIDE_Action=5,
+	TEXT_GUIDE_Mission=6,
+	TEXT_GUIDE_Program=7,
+}
