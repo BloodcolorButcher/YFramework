@@ -1,6 +1,9 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
-    <Style src="project://database/Assets/UI/input.uss?fileID=7433441132597879392&amp;guid=2f9704b1e4de3454caf57202b8935a9f&amp;type=3#input" />
-    <ui:VisualElement name="VisualElement" style="flex-grow: 1; background-color: rgba(0, 0, 0, 0); width: 100%; height: 540px; left: 0; top: 0; right: 0; bottom: 0;">
-        <ui:ListView focusable="true" tabindex="0" />
+    <Style src="project://database/Assets/UI/ChatStyle.uss?fileID=7433441132597879392&amp;guid=1b70443e81c2cce498c83fa019c7e6c5&amp;type=3#ChatStyle" />
+    <ui:VisualElement name="VisualElement" style="flex-grow: 1; background-color: rgba(0, 0, 0, 0); width: 500px; height: 1080px; left: 0; top: 0; right: 0; bottom: 0; flex-direction: row; align-items: flex-start; justify-content: flex-start; align-self: flex-start; flex-shrink: 1; flex-wrap: wrap;">
+        <ui:ScrollView name="ScrollView" vertical-scroller-visibility="Auto" style="height: 900px; width: 500px;" />
+        <ui:TextField picking-mode="Ignore" name="SendMsgInput" multiline="true" style="width: 500px; height: 123px; margin-left: 0; margin-right: 0; font-size: 20px;" />
+        <ui:Button text="发送" display-tooltip-when-elided="true" name="SendBtn" style="width: 200px; padding-left: 0; padding-right: 0; padding-top: 0; padding-bottom: 0; height: 48px; margin-left: 0; margin-right: 100px; font-size: 20px; white-space: nowrap; flex-direction: row-reverse; flex-wrap: nowrap;" />
+        <ui:Button text="清空" display-tooltip-when-elided="true" name="CleanBtn" style="width: 200px; padding-left: 0; padding-right: 0; padding-top: 0; padding-bottom: 0; height: 48px; margin-left: 0; margin-right: 0; font-size: 20px; white-space: nowrap;" />
     </ui:VisualElement>
 </ui:UXML>
