@@ -248,10 +248,9 @@ public class ClientManager
             {
                 //解析收到的消息
                 Debug.Log("收到消息");
-                var data = new byte[bytesRead];
-               Array.Copy(buffer,data, bytesRead);
-                Debug.Log(Encoding.UTF8.GetString(data));
-                /*
+              
+                Debug.Log(Encoding.UTF8.GetString(buffer,0,bytesRead));
+                /*GetString(state.buffer, 0, bytesRead)
                  //ProtobufTool.Serialize<BaseMessage>(x);
                  //Debug.Log(bytes.Length);
                  //IMessage bm = ProtobufTool.Deserialize("BaseMessage" ,bytes);

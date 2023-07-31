@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
+using UnityEngine;
 
 public static class NetManager
 {
@@ -25,7 +26,7 @@ public static class NetManager
 		listenfd.Bind(ipEp);
 		//Listen 设置监听个数 , 指定队列中最多可容纳等待接收的连接数，0表示不限制
 		listenfd.Listen(0);
-		Console.WriteLine("[服务器]启动成功");
+		Debug.Log("[服务器]启动成功");
 		//循环
 		while(true)
 		{
@@ -77,7 +78,7 @@ public static class NetManager
 		try
 		{
 			Socket clientfd = listenfd.Accept();
-			Console.WriteLine("新Socket成员:" + clientfd.RemoteEndPoint.ToString() + "加入");
+			Debug.Log("新Socket成员:" + clientfd.RemoteEndPoint.ToString() + "加入");
 			ClientState state = new ClientState();
 			state.workSocket = clientfd;
 			// state.lastPingTime = GetTimeStamp();
@@ -85,7 +86,7 @@ public static class NetManager
 		}
 		catch (SocketException ex)
 		{
-			Console.WriteLine("新成员接收失败 Accept fail" + ex.ToString());
+			Debug.Log("新成员接收失败 Accept fail" + ex.ToString());
 		}
 	}
 	//读取Clientfd
@@ -103,14 +104,14 @@ public static class NetManager
 		}
 		catch (SocketException ex)
 		{
-			Console.WriteLine("Receive SocketException " + ex.ToString());
+			Debug.Log("Receive SocketException " + ex.ToString());
 			//Close(state);
 			return;
 		}
 		//客户端关闭
 		if(bytesRead <= 0)
 		{
-			Console.WriteLine("Socket Close " + clientfd.RemoteEndPoint.ToString() + "客户端退出了该连接！");
+			Debug.Log("Socket Close " + clientfd.RemoteEndPoint.ToString() + "客户端退出了该连接！");
 			Close(state);
 			return;
 		}
@@ -119,7 +120,7 @@ public static class NetManager
 		{
 
 			//state.sb.Append(Encoding.UTF8.GetString(state.buffer, 0, bytesRead));
-			Console.WriteLine("收到消息");
+			Debug.Log("收到消息");
 			// Console.WriteLine(state.sb.ToString());
 			//BaseMessage x = new BaseMessage();
 			//x.RpcId = 1234;
