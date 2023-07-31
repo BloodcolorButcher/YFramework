@@ -1,7 +1,7 @@
 using MemoryPack;
 
-[MemoryPackable()]
-public class S2C_LoginMsg : IResponse
+[MemoryPackable]
+public partial class S2C_LoginMsg : IResponse
 {
 	
 	public int Error { get; set; }

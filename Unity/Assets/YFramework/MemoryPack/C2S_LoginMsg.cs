@@ -1,7 +1,7 @@
 using MemoryPack;
 
-[MemoryPackable()]
-public class C2S_LoginMsg : IRequest
+[MemoryPackable]
+public partial class C2S_LoginMsg : IRequest
 {
 	
 	public int RpcId { get; set; }

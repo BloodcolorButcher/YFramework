@@ -1,7 +1,7 @@
 using MemoryPack;
 
 [MemoryPackable]
-public class BaseMessage: IRequest
+public partial class BaseMessage: IRequest
 {
 	public int RpcId { get; set; }
 
