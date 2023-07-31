@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
+using System.Text;
 using UnityEngine;
 
 public static class NetManager
@@ -121,7 +122,7 @@ public static class NetManager
 
 			//state.sb.Append(Encoding.UTF8.GetString(state.buffer, 0, bytesRead));
 			Debug.Log("收到消息");
-			// Console.WriteLine(state.sb.ToString());
+			Console.WriteLine(Encoding.UTF8.GetString(state.buffer, 0, bytesRead));
 			//BaseMessage x = new BaseMessage();
 			//x.RpcId = 1234;
 			//x.Account = "yangyue";
