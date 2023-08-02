@@ -1,0 +1,9 @@
+/Unity/Library
+/Unity/Temp
+/Unity/Logs
+/Unity/Build
+/Unity/obj
+/Unity/*.csproj
+/Unity/.idea
+/Unity/Server/.idea
+/Unity/Server/Server/bin

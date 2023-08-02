@@ -248,8 +248,12 @@ public class ClientManager
             {
                 //解析收到的消息
                 Debug.Log("收到消息");
-              
-                Debug.Log(Encoding.UTF8.GetString(buffer,0,bytesRead));
+                
+                var data = new byte[bytesRead];
+                Array.Copy(buffer,data,bytesRead);
+                S2C_LoginMsg s2CLoginMsg = MemoryPackHelper.DeserializeObject<S2C_LoginMsg>(data);
+                Debug.Log("id"+ s2CLoginMsg.RpcId +"error:"+s2CLoginMsg.Error +"msg:"+s2CLoginMsg.Message);
+                // Debug.Log(Encoding.UTF8.GetString(buffer,0,bytesRead));
                 /*GetString(state.buffer, 0, bytesRead)
                  //ProtobufTool.Serialize<BaseMessage>(x);
                  //Debug.Log(bytes.Length);

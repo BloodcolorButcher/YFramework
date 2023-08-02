@@ -1,6 +1,3 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
 
@@ -20,9 +17,11 @@ public class ClientTest : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(Input.GetKey(KeyCode.W))
+        if(Input.GetKeyDown(KeyCode.W))
         {
-            ClientManager.Send(Encoding.UTF8.GetBytes("你好服务器！！！"));
+            C2S_LoginMsg c2SLoginMsg = new C2S_LoginMsg() { RpcId = 1, Account = "yangyue", Password = "yangyue" };
+            var data = MemoryPackHelper.Serialize(c2SLoginMsg); 
+            ClientManager.Send(data);
         }
     }
     private void OnDestroy()
