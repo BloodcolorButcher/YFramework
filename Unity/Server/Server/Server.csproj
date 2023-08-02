@@ -7,4 +7,38 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
+    <ItemGroup>
+      <PackageReference Include="MemoryPack" Version="1.9.16" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Include="..\..\Assets\YFramework\MemoryPack\BaseMessage.cs">
+        <Link>MemoryPack\BaseMessage.cs</Link>
+      </Compile>
+      <Compile Include="..\..\Assets\YFramework\MemoryPack\C2S_LoginMsg.cs">
+        <Link>MemoryPack\C2S_LoginMsg.cs</Link>
+      </Compile>
+      <Compile Include="..\..\Assets\YFramework\MemoryPack\IMessage.cs">
+        <Link>MemoryPack\IMessage.cs</Link>
+      </Compile>
+      <Compile Include="..\..\Assets\YFramework\MemoryPack\S2C_LoginMsg.cs">
+        <Link>MemoryPack\S2C_LoginMsg.cs</Link>
+      </Compile>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Content Include="..\..\Assets\YFramework\MemoryPack\BaseMessage.cs.meta">
+        <Link>MemoryPack\BaseMessage.cs.meta</Link>
+      </Content>
+      <Content Include="..\..\Assets\YFramework\MemoryPack\C2S_LoginMsg.cs.meta">
+        <Link>MemoryPack\C2S_LoginMsg.cs.meta</Link>
+      </Content>
+      <Content Include="..\..\Assets\YFramework\MemoryPack\IMessage.cs.meta">
+        <Link>MemoryPack\IMessage.cs.meta</Link>
+      </Content>
+      <Content Include="..\..\Assets\YFramework\MemoryPack\S2C_LoginMsg.cs.meta">
+        <Link>MemoryPack\S2C_LoginMsg.cs.meta</Link>
+      </Content>
+    </ItemGroup>
+
 </Project>

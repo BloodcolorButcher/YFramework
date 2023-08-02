@@ -43,6 +43,12 @@
       "frameworks": {
         "net7.0": {
           "targetAlias": "net7.0",
+          "dependencies": {
+            "MemoryPack": {
+              "target": "Package",
+              "version": "[1.9.16, )"
+            }
+          },
           "imports": [
             "net461",
             "net462",

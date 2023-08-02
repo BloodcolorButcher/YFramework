@@ -13,3 +13,5 @@ E:\UnityWork\YFramework\Unity\Server\Server\obj\Debug\net7.0\refint\Server.dll
 E:\UnityWork\YFramework\Unity\Server\Server\obj\Debug\net7.0\Server.pdb
 E:\UnityWork\YFramework\Unity\Server\Server\obj\Debug\net7.0\Server.genruntimeconfig.cache
 E:\UnityWork\YFramework\Unity\Server\Server\obj\Debug\net7.0\ref\Server.dll
+E:\UnityWork\YFramework\Unity\Server\Server\bin\Debug\net7.0\MemoryPack.Core.dll
+E:\UnityWork\YFramework\Unity\Server\Server\obj\Debug\net7.0\Server.csproj.CopyComplete
