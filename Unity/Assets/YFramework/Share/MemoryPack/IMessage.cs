@@ -1,6 +1,8 @@
-﻿public interface IMessage
+﻿public partial interface IMessage
 {
+    
 }
+
 public interface IRequest : IMessage
 {
     int RpcId
@@ -9,6 +11,7 @@ public interface IRequest : IMessage
         set;
     }
 }
+
 public interface IResponse : IMessage
 {
     int Error
@@ -28,6 +31,8 @@ public interface IResponse : IMessage
         set;
     }
 }
+
+
 public interface ErrorResponse : IResponse
 {
     public int Error

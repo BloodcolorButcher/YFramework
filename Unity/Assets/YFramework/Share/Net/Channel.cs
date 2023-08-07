@@ -14,5 +14,27 @@ public abstract class Channel
 	/// </summary>
 	/// <param name="data"></param>
 	public abstract void RecMsg(byte[] data);
-	
+
+	/// <summary>
+	/// 更新
+	/// </summary>
+	public abstract void Updata();
+
+}
+
+public class TcpChannel : Channel
+{
+	//public byte bytes;
+	public override void SendMsg(byte[] data)
+	{
+		
+	}
+	public override void RecMsg(byte[] data)
+	{
+		
+	}
+	public override void Updata()
+	{
+		
+	}
 }

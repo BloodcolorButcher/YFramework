@@ -251,8 +251,19 @@ public class ClientManager
                 
                 var data = new byte[bytesRead];
                 Array.Copy(buffer,data,bytesRead);
-                S2C_LoginMsg s2CLoginMsg = MemoryPackHelper.DeserializeObject<S2C_LoginMsg>(data);
-                Debug.Log("id"+ s2CLoginMsg.RpcId +"error:"+s2CLoginMsg.Error +"msg:"+s2CLoginMsg.Message);
+                // IRequest request = MemoryPackHelper.DeserializeObject<IRequest>(data);
+                // Debug.Log(request.RpcId);
+                // if(request.RpcId ==1)
+                // {
+                //     S2C_LoginMsg s2CLoginMsg = MemoryPackHelper.DeserializeObject<S2C_LoginMsg>(data);
+                //     Debug.Log("id"+ s2CLoginMsg.RpcId +"error:"+s2CLoginMsg.Error +"msg:"+s2CLoginMsg.Message);
+                // }
+                // else
+                {
+                    C2C_SendMsg c2CSendMsg =  MemoryPackHelper.DeserializeObject<C2C_SendMsg>(data);
+                    Debug.Log("id"+c2CSendMsg.RpcId + "msg:"+c2CSendMsg.msg);
+                }
+              
                 // Debug.Log(Encoding.UTF8.GetString(buffer,0,bytesRead));
                 /*GetString(state.buffer, 0, bytesRead)
                  //ProtobufTool.Serialize<BaseMessage>(x);

@@ -12,8 +12,8 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Compile Include="..\..\Assets\YFramework\Share\MemoryPack\BaseMessage.cs">
-        <Link>Share\MemoryPack\BaseMessage.cs</Link>
+      <Compile Include="..\..\Assets\YFramework\Share\MemoryPack\C2C_SendMsg.cs">
+        <Link>Share\MemoryPack\C2C_SendMsg.cs</Link>
       </Compile>
       <Compile Include="..\..\Assets\YFramework\Share\MemoryPack\C2S_LoginMsg.cs">
         <Link>Share\MemoryPack\C2S_LoginMsg.cs</Link>
@@ -24,8 +24,17 @@
       <Compile Include="..\..\Assets\YFramework\Share\MemoryPack\MemoryPackHelper.cs">
         <Link>Share\MemoryPack\MemoryPackHelper.cs</Link>
       </Compile>
+      <Compile Include="..\..\Assets\YFramework\Share\MemoryPack\MsgType.cs">
+        <Link>Share\MemoryPack\MsgType.cs</Link>
+      </Compile>
       <Compile Include="..\..\Assets\YFramework\Share\MemoryPack\S2C_LoginMsg.cs">
         <Link>Share\MemoryPack\S2C_LoginMsg.cs</Link>
+      </Compile>
+      <Compile Include="..\..\Assets\YFramework\Share\Net\Channel.cs">
+        <Link>Share\Net\Channel.cs</Link>
+      </Compile>
+      <Compile Include="..\..\Assets\YFramework\Share\Net\YYProtolcol.cs">
+        <Link>Share\Net\YYProtolcol.cs</Link>
       </Compile>
     </ItemGroup>
 

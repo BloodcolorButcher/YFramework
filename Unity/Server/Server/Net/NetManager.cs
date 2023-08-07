@@ -1,6 +1,7 @@
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading.Channels;
 
 public static class NetManager
 {
@@ -122,36 +123,54 @@ public static class NetManager
 			// Console.WriteLine(Encoding.UTF8.GetString(state.buffer, 0, bytesRead));
 			var data = new byte[bytesRead];
 			Array.Copy(state.buffer,data,bytesRead);
-			C2S_LoginMsg c2SLoginMsg = MemoryPackHelper.DeserializeObject<C2S_LoginMsg>(data);
-			Console.WriteLine("id"+c2SLoginMsg.RpcId+"用户名"+c2SLoginMsg.Account+"密码:"+c2SLoginMsg.Password);
-
-			S2C_LoginMsg s2CLoginMsg = new S2C_LoginMsg();
-			s2CLoginMsg.RpcId = c2SLoginMsg.RpcId;
-			if(c2SLoginMsg.Account == "yangyue"&& c2SLoginMsg.Password == "yangyue")
+			 // IMessage message = MemoryPackHelper.DeserializeObject<IMessage>(data);
+			 // Console.WriteLine(message.MsgType);
+			// if(request.RpcId ==1)
+			// {
+			// 	C2S_LoginMsg c2SLoginMsg = MemoryPackHelper.DeserializeObject<C2S_LoginMsg>(data);
+			// 	Console.WriteLine("id"+c2SLoginMsg.RpcId+"用户名"+c2SLoginMsg.Account+"密码:"+c2SLoginMsg.Password);
+			//
+			// 	S2C_LoginMsg s2CLoginMsg = new S2C_LoginMsg();
+			// 	s2CLoginMsg.RpcId = c2SLoginMsg.RpcId;
+			// 	if(c2SLoginMsg.Account == "yangyue"&& c2SLoginMsg.Password == "yangyue")
+			// 	{
+			// 	
+			// 		s2CLoginMsg.Error = 0;
+			// 		s2CLoginMsg.Message = "登录成功";
+			// 	}
+			// 	else if(c2SLoginMsg.Account == "yangyue2"&& c2SLoginMsg.Password == "yangyue")
+			// 	{
+			// 		s2CLoginMsg.Error = 0;
+			// 		s2CLoginMsg.Message = "登录成功";
+			// 	}
+			// 	else
+			// 	{
+			// 		s2CLoginMsg.Error = 1;
+			// 		s2CLoginMsg.Message = "用户名或密码错误";
+			// 	}
+			// 	//BaseMessage x = new BaseMessage();
+			// 	//x.RpcId = 1234;
+			// 	//x.Account = "yangyue";
+			// 	//x.Password = "123";
+			// 	//byte[] bytes = ProtobufTool.Serialize<BaseMessage>(x);
+			// 	// state.workSocket.BeginSend(state.buffer, 0, bytesRead, 0, null, null);
+			//
+			// 	var bytes = MemoryPackHelper.Serialize(s2CLoginMsg);
+			// 	state.workSocket.BeginSend(bytes,0,bytes.Length,0,null,null);
+			// }
+			// else
 			{
-				
-				s2CLoginMsg.Error = 0;
-				s2CLoginMsg.Message = "登录成功";
+				Console.WriteLine("进行了消息的转发");
+				foreach(var item in clients)
+				{
+					if(item.Key!= clientfd)
+					{
+						item.Value.workSocket.BeginSend(state.buffer, 0, bytesRead, 0, null, null);
+					}
+				}
 			}
-			else if(c2SLoginMsg.Account == "yangyue2"&& c2SLoginMsg.Password == "yangyue")
-			{
-				s2CLoginMsg.Error = 0;
-				s2CLoginMsg.Message = "登录成功";
-			}
-			else
-			{
-				s2CLoginMsg.Error = 1;
-				s2CLoginMsg.Message = "用户名或密码错误";
-			}
-			//BaseMessage x = new BaseMessage();
-			//x.RpcId = 1234;
-			//x.Account = "yangyue";
-			//x.Password = "123";
-			//byte[] bytes = ProtobufTool.Serialize<BaseMessage>(x);
-			// state.workSocket.BeginSend(state.buffer, 0, bytesRead, 0, null, null);
 			
-			var bytes = MemoryPackHelper.Serialize(s2CLoginMsg);
-			state.workSocket.BeginSend(bytes,0,bytes.Length,0,null,null);
+			
 		}
 		//消息处理
 		//readBuff.writeIdx += count;

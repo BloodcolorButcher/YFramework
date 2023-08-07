@@ -19,7 +19,7 @@ public class ClientTest : MonoBehaviour
     {
         if(Input.GetKeyDown(KeyCode.W))
         {
-            C2S_LoginMsg c2SLoginMsg = new C2S_LoginMsg() { RpcId = 1, Account = "yangyue", Password = "yangyue" };
+            C2S_LoginMsg c2SLoginMsg = new C2S_LoginMsg() {RpcId = 1, Account = "yangyue", Password = "yangyue" };
             var data = MemoryPackHelper.Serialize(c2SLoginMsg); 
             ClientManager.Send(data);
         }

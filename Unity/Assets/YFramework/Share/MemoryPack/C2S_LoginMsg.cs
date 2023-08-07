@@ -3,7 +3,6 @@ using MemoryPack;
 [MemoryPackable]
 public partial class C2S_LoginMsg : IRequest
 {
-	
 	public int RpcId { get; set; }
 
 	
