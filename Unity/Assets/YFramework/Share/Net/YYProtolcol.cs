@@ -1,6 +1,8 @@
-
 using System.IO;
 
+/// <summary>
+/// 协议
+/// </summary>
 public static class YYProtolcol
 {
 	/// <summary>
@@ -12,7 +14,7 @@ public static class YYProtolcol
 	{
 		
 		/// <summary>
-		/// 
+		/// 消息转换成byte[]
 		/// </summary>
 		/// <param name="msgType"></param>
 		/// <param name="data"></param>
@@ -21,7 +23,7 @@ public static class YYProtolcol
 		{
 			using (MemoryStream stream = new MemoryStream())
 			{
-				int len = data.Length + 4;
+				int len = data.Length+2;
 				//填入数据长度
 				stream.Write(Num2Bytes(len));
 				stream.Write(Num2Bytes(msgType));
@@ -56,12 +58,23 @@ public static class YYProtolcol
 		bytes[1] = (byte)(num & 0xff);
 		return bytes;
 	}
-
+	/// <summary>
+	/// 两个byte合成一个int
+	/// </summary>
+	/// <param name="high"></param>
+	/// <param name="low"></param>
+	/// <returns></returns>
 	public static int Bytes2Int(int high,int low)
 	{
 		return(high << 8) + low;
 	}
-		
+    
+	/// <summary>
+	/// 两个byte合成一个unshort
+	/// </summary>
+	/// <param name="high"></param>
+	/// <param name="low"></param>
+	/// <returns></returns>
 	public static ushort Bytes2UnShort(int high,int low)
 	{
 		return (ushort)((high << 8) + low);

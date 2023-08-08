@@ -49,6 +49,17 @@ public static class NetManager
 		}
 	}
 
+	public static void Updata()
+	{
+		if(clients.Count>0)
+		{
+			foreach(var item in clients)
+			{
+				item.Value.Updata();
+			}
+		}
+	}
+
 
 	/// <summary>
 	/// 填充用来检查select的类表
@@ -95,11 +106,11 @@ public static class NetManager
 		ClientState state = clients[clientfd];
 
 		int bytesRead;
-
+        byte[] buffer = new byte[1024];
 		try
 		{
 
-			bytesRead = clientfd.Receive(state.buffer, 0, 1024, 0);
+			bytesRead = clientfd.Receive(buffer, 0, 1024, 0);
 		}
 		catch (SocketException ex)
 		{
@@ -122,54 +133,8 @@ public static class NetManager
 			Console.WriteLine("收到消息");
 			// Console.WriteLine(Encoding.UTF8.GetString(state.buffer, 0, bytesRead));
 			var data = new byte[bytesRead];
-			Array.Copy(state.buffer,data,bytesRead);
-			 // IMessage message = MemoryPackHelper.DeserializeObject<IMessage>(data);
-			 // Console.WriteLine(message.MsgType);
-			// if(request.RpcId ==1)
-			// {
-			// 	C2S_LoginMsg c2SLoginMsg = MemoryPackHelper.DeserializeObject<C2S_LoginMsg>(data);
-			// 	Console.WriteLine("id"+c2SLoginMsg.RpcId+"用户名"+c2SLoginMsg.Account+"密码:"+c2SLoginMsg.Password);
-			//
-			// 	S2C_LoginMsg s2CLoginMsg = new S2C_LoginMsg();
-			// 	s2CLoginMsg.RpcId = c2SLoginMsg.RpcId;
-			// 	if(c2SLoginMsg.Account == "yangyue"&& c2SLoginMsg.Password == "yangyue")
-			// 	{
-			// 	
-			// 		s2CLoginMsg.Error = 0;
-			// 		s2CLoginMsg.Message = "登录成功";
-			// 	}
-			// 	else if(c2SLoginMsg.Account == "yangyue2"&& c2SLoginMsg.Password == "yangyue")
-			// 	{
-			// 		s2CLoginMsg.Error = 0;
-			// 		s2CLoginMsg.Message = "登录成功";
-			// 	}
-			// 	else
-			// 	{
-			// 		s2CLoginMsg.Error = 1;
-			// 		s2CLoginMsg.Message = "用户名或密码错误";
-			// 	}
-			// 	//BaseMessage x = new BaseMessage();
-			// 	//x.RpcId = 1234;
-			// 	//x.Account = "yangyue";
-			// 	//x.Password = "123";
-			// 	//byte[] bytes = ProtobufTool.Serialize<BaseMessage>(x);
-			// 	// state.workSocket.BeginSend(state.buffer, 0, bytesRead, 0, null, null);
-			//
-			// 	var bytes = MemoryPackHelper.Serialize(s2CLoginMsg);
-			// 	state.workSocket.BeginSend(bytes,0,bytes.Length,0,null,null);
-			// }
-			// else
-			{
-				Console.WriteLine("进行了消息的转发");
-				foreach(var item in clients)
-				{
-					if(item.Key!= clientfd)
-					{
-						item.Value.workSocket.BeginSend(state.buffer, 0, bytesRead, 0, null, null);
-					}
-				}
-			}
-			
+			Array.Copy(buffer,data,bytesRead);
+			state.RecMsg(data);
 			
 		}
 		//消息处理
@@ -199,5 +164,17 @@ public static class NetManager
 	public static void Close()
 	{
 		listenfd.Close();
+	}
+
+	public static void SendOthers(Socket clientfd,byte[] datas)
+	{
+		Console.WriteLine("进行了消息的转发");
+		foreach(var item in clients)
+		{
+			if(item.Key!= clientfd)
+			{
+				item.Value.workSocket.BeginSend(datas, 0, datas.Length, 0, null, null);
+			}
+		}
 	}
 }

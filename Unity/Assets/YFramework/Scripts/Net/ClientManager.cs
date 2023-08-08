@@ -10,17 +10,18 @@ public class ClientManager
  //定义套接字
     static Socket socket;
 
+    private Channel _channel;
     
     //写入队列
     //static Queue<ByteArray> writeQueue;
     //是否正在连接
-    static bool isConnecting = false;
+    bool isConnecting = false;
 
     //是否正在关闭
     //static bool isClosing = false;
     //收到消息后组成一个合成信息
 
-    private static byte[] buffer = new byte[1024];
+    private byte[] buffer = new byte[1024];
 
 
     ////消息列表长度
@@ -28,22 +29,25 @@ public class ClientManager
     ////每一次Update处理的消息量
     readonly static int MAX_MESSAGE_FIRE = 10;
     //是否启用心跳
-    public static bool isUsePing = true;
+    public bool isUsePing = true;
 
     //心跳间隔时间
-    public static int pingInterval = 30;
+    public int pingInterval = 30;
     //上一次发送PING的时间
     //static float lastPingTime = 0;
     ////上一次收到PONG的时间
     //static float lastPongTime = 0;
 
-   
+    public ClientManager()
+    {
+        _channel = new TcpChannel();
+    }
 
    
 
 
     //连接
-    public static void Connect(string ip, int port)
+    public  void Connect(string ip, int port)
     {
      
         //状态判断
@@ -69,7 +73,7 @@ public class ClientManager
     }
 
     //初始化状态
-    private static void InitState()
+    private  void InitState()
     {
         //Socket
         socket = new Socket(AddressFamily.InterNetwork,
@@ -98,7 +102,7 @@ public class ClientManager
     }
 
     //Connect 连接回调
-    private static void ConnectCallback(IAsyncResult ar)
+    private  void ConnectCallback(IAsyncResult ar)
     {
         try
         {
@@ -119,8 +123,13 @@ public class ClientManager
     }
 
 
+    public void Updata()
+    {
+        _channel.Updata();
+    }
+
     //关闭连接
-    public static void Close()
+    public  void Close()
     {
         //状态判断
         if (socket == null || !socket.Connected)
@@ -236,7 +245,7 @@ public class ClientManager
 
 
     //Receive回调
-    public static void ReceiveCallback(IAsyncResult ar)
+    public  void ReceiveCallback(IAsyncResult ar)
     {
         try
         {
@@ -293,7 +302,7 @@ public class ClientManager
     }
 
     //发送数据
-    public static void Send(string str)
+    public  void Send(string str)
     {
         byte[] sendbuf = Encoding.UTF8.GetBytes(str);
         Debug.Log(Encoding.UTF8.GetString(sendbuf));
@@ -301,12 +310,12 @@ public class ClientManager
         //socket.Send(sendbuf)
     }
     //发送数据
-    public static void Send(byte[] sendbuf)
+    public  void Send(byte[] sendbuf)
     {
         socket.BeginSend(sendbuf, 0, sendbuf.Length, 0, null, null);  
     }
 
-    public static void SendCallback(IAsyncResult ar)
+    public  void SendCallback(IAsyncResult ar)
     {
         try
         {
@@ -334,11 +343,7 @@ public class ClientManager
  
 
 
-
-  
-
-
- 
-
+    
+    
     
 }

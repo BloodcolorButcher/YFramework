@@ -33,9 +33,13 @@
       <Compile Include="..\..\Assets\YFramework\Share\Net\Channel.cs">
         <Link>Share\Net\Channel.cs</Link>
       </Compile>
+      <Compile Include="..\..\Assets\YFramework\Share\Net\TcpChannel.cs">
+        <Link>Share\Net\TcpChannel.cs</Link>
+      </Compile>
       <Compile Include="..\..\Assets\YFramework\Share\Net\YYProtolcol.cs">
         <Link>Share\Net\YYProtolcol.cs</Link>
       </Compile>
     </ItemGroup>
+
 
 </Project>

@@ -8,21 +8,28 @@
 // Console.ReadLine();
 
 
-NetManager.StartLoop(8888);
+Thread netThread = new Thread(() =>
+{
+	NetManager.StartLoop(8888);
+});
+netThread.IsBackground = true;
+netThread.Start();
+
+
 
 
 //updata启动方案
-// while (true)
-// {
-// 	Thread.Sleep(1);
-// 	try
-// 	{
-// 		Init.Update();
-// 		Init.LateUpdate();
-// 		Init.FrameFinishUpdate();
-// 	}
-// 	catch (Exception e)
-// 	{
-// 		Log.Error(e);
-// 	}
-// }
+while (true)
+{
+	Thread.Sleep(1);
+	try
+	{
+		NetManager.Updata();
+	}
+	catch (Exception e)
+	{
+		Console.WriteLine(e);
+	}
+}
+Console.WriteLine("结束");
+// netThread.Abort();
