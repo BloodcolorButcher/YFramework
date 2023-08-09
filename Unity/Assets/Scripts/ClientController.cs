@@ -10,7 +10,7 @@ public class ClientController : MonoBehaviour
     private string ip = "127.0.0.1";
     private int port = 8888;
 
-    private ClientManager _clientManager = new ClientManager();
+    private ClientManager _clientManager;
     private void Awake()
     {
         Instance = this;
@@ -18,6 +18,7 @@ public class ClientController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        _clientManager = new ClientManager();
         _clientManager.Connect(ip,port);
     }
 
@@ -26,7 +27,21 @@ public class ClientController : MonoBehaviour
     {
         _clientManager.Updata();
     }
-    
-    
-    
+
+    private void OnDestroy()
+    {
+        _clientManager.Close();
+    }
+
+    public void Send(byte[] datas)
+    {
+        _clientManager.Send(datas);
+    }
+    public void RecMsg(byte[] data)
+    {
+        _clientManager.RecMsg(data);
+    }
+
+
+   
 }

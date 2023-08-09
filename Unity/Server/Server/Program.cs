@@ -15,7 +15,8 @@ Thread netThread = new Thread(() =>
 netThread.IsBackground = true;
 netThread.Start();
 
-
+	
+	
 
 
 //updata启动方案

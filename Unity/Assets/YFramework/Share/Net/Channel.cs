@@ -1,9 +1,16 @@
+using System;
+
 /// <summary>
 /// 抽象类
 /// </summary>
 public abstract class Channel
 {
 
+	public abstract Action<MsgType, byte[]> MsgEvent
+	{
+		get;
+		set;
+	}
 	/// <summary>
 	/// 发送消息
 	/// </summary>

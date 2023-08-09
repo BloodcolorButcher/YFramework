@@ -10,7 +10,7 @@ public class ClientState
 	public ClientState()
 	{
 		_channel = new TcpChannel();
-		_channel
+		_channel.MsgEvent += MsgHandler;
 	}
 
 	/// <summary>
@@ -45,16 +45,26 @@ public class ClientState
 	{
 		switch(msgType)
 		{
-			case MsgType.S2C_LoginMsg:
+			case MsgType.C2S_LoginMsg:
 			{
 				C2S_LoginMsg c2SLoginMsg = MemoryPackHelper.DeserializeObject<C2S_LoginMsg>(datas);
 				S2C_LoginMsg s2CLoginMsg = new S2C_LoginMsg();
+				s2CLoginMsg.RpcId = c2SLoginMsg.RpcId;
 				if(c2SLoginMsg.Account == "yangyue" && c2SLoginMsg.Password== "yangyue")
 				{
-					s2CLoginMsg.RpcId = c2SLoginMsg.RpcId;
+					s2CLoginMsg.Message = "登录成功！！！";
+					s2CLoginMsg.Error = 2000;
+
 				}
+				else
+				{
+					s2CLoginMsg.Message = "登录失败！！！";
+					s2CLoginMsg.Error = 2001;
+				}
+				var msg = MemoryPackHelper.Serialize(s2CLoginMsg);
+				var bytes = YYProtolcol.TcpProtocol.MsgToBytes((int)MsgType.S2C_LoginMsg,msg);
 				
-				
+				SendMsg(bytes);
 
 			}
 				break;
@@ -67,6 +77,16 @@ public class ClientState
 			
 			
 		}
+	}
+
+	/// <summary>
+	/// 关闭连接
+	/// </summary>
+	public void Close()
+	{
+		_channel.MsgEvent -= MsgHandler;
+		workSocket.Close();
+		workSocket = null;
 	}
 	
 }

@@ -6,21 +6,21 @@ public class ClientTest : MonoBehaviour
 {
   
     
-    // Start is called before the first frame update
-    void Start()
-    {
-        // ClientManager.Connect(ip, port);
-           
-    }
 
     // Update is called once per frame
     void Update()
     {
         if(Input.GetKeyDown(KeyCode.W))
         {
-            C2S_LoginMsg c2SLoginMsg = new C2S_LoginMsg() {RpcId = 1, Account = "yangyue", Password = "yangyue" };
-            var data = MemoryPackHelper.Serialize(c2SLoginMsg); 
-            // ClientManager.Send(data);
+            C2S_LoginMsg c2SLoginMsg = new C2S_LoginMsg() {RpcId = 1, Account = "yangyue", Password = "yangyue2" };
+            var data = MemoryPackHelper.Serialize(c2SLoginMsg);
+            var datas = YYProtolcol.TcpProtocol.MsgToBytes((int)MsgType.C2S_LoginMsg, data);
+            Debug.Log(string.Join(" ",datas));
+         
+            ClientController.Instance.Send(datas);
+            // ClientController.Instance.RecMsg(datas);
+            
+            
         }
        
         if(Input.GetKeyDown(KeyCode.S))
@@ -32,12 +32,5 @@ public class ClientTest : MonoBehaviour
             // ClientManager.Send(data);
         }
     }
-    private void FixedUpdate()
-    {
-        
-    }
-    private void OnDestroy()
-    {
-        // ClientManager.Close();
-    }
+
 }

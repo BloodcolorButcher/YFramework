@@ -155,9 +155,10 @@ public static class NetManager
 		//MethodInfo mei = typeof(EventHandler).GetMethod("OnDisconnect");
 		//object[] ob = { state };
 		//mei.Invoke(null, ob);
-		////关闭
-		state.workSocket.Close();
+		
 		clients.Remove(state.workSocket);
+		////关闭
+		state.Close();
 
 	}
 

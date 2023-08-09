@@ -4,38 +4,45 @@ using System.IO;
 
 public class TcpChannel : Channel
 {
+	class MyClass
+	{
+		public string name;
+	}
 	
 	//接收队列
-	private readonly Queue<byte[]> _recQueue = new Queue<byte[]>();
+	private  Queue<byte[]> _recQueue = new Queue<byte[]>();
 	//生产队列
-	private readonly Queue<byte[]> _prodQueue = new Queue<byte[]>();
+	private  Queue<byte[]> _prodQueue = new Queue<byte[]>();
 
-	private readonly Queue<byte[]> _bufferQueue = new Queue<byte[]>();
+	private  Queue<byte[]> _bufferQueue = new Queue<byte[]>();
 
 	private object _obg = new object();
-
+    
+	
 	/// <summary>
 	/// 外部需要订阅的消息事件
 	/// </summary>
-	public Action<MsgType, byte[]> MsgEvent;
 	//public byte bytes;
+	public override Action<MsgType, byte[]> MsgEvent { get; set; }
 	public override void SendMsg(byte[] datas)
 	{
 
 	}
 	public override void RecMsg(byte[] datas)
 	{
+		// Debug.Log(string.Join(" ",datas));
 		//把收到的消息放到缓存队列
 		_recQueue.Enqueue(datas);
-		ReceiveHandler();
 	}
 	public override void Updata()
 	{
+		
 		if(_recQueue.Count < 1)
 		{
 			return;
 		}
 		SwitchQueue();
+	
 		ReceiveHandler();
 	}
 
@@ -43,7 +50,7 @@ public class TcpChannel : Channel
 	{
 		lock( _obg )
 		{
-			Swap(_recQueue, _prodQueue);
+			Swap(ref _recQueue,ref _prodQueue);
 		}
 	}
 
@@ -77,7 +84,7 @@ public class TcpChannel : Channel
 				// }
 
 			}
-
+			// Debug.Log(string.Join(" ",stream.ToArray()));
 			//设置读取指针
 			stream.Seek(0, SeekOrigin.Begin);
 			stream.Position = 0;
@@ -126,7 +133,7 @@ public class TcpChannel : Channel
 					
 					int cmd = YYProtolcol.Bytes2Int(main_cmd, sub_cmd);
 					FireMsg(cmd, tempdata);
-                    
+					left += length;
 				}
                 
 			}
@@ -141,11 +148,13 @@ public class TcpChannel : Channel
 		// MsgDic[type]?.Invoke(data);
 		MsgEvent?.Invoke((MsgType)type, data);
 	}
-
-	private void Swap<T>(T t1, T t2)
+    
+	
+	private void Swap<T>(ref T t1,ref T t2)
 	{
 		T temp = t2;
 		t2 = t1;
 		t1 = temp;
 	}
+	
 }

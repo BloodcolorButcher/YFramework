@@ -23,7 +23,11 @@ public class ClientManager
 
     private byte[] buffer = new byte[1024];
 
-
+  
+    
+    private Dictionary<MsgType, Action<byte[]>> _msgDic = new Dictionary<MsgType,Action<byte[]>>();
+    
+    
     ////消息列表长度
     //static int msgCount = 0;
     ////每一次Update处理的消息量
@@ -41,6 +45,8 @@ public class ClientManager
     public ClientManager()
     {
         _channel = new TcpChannel();
+        _channel.MsgEvent += MsgHandler;
+        
     }
 
    
@@ -64,7 +70,7 @@ public class ClientManager
         }
 
         //初始化成员
-        InitState();
+        Init();
         //参数设置
         socket.NoDelay = true;
         //Connect
@@ -73,7 +79,7 @@ public class ClientManager
     }
 
     //初始化状态
-    private  void InitState()
+    private  void Init()
     {
         //Socket
         socket = new Socket(AddressFamily.InterNetwork,
@@ -136,112 +142,13 @@ public class ClientManager
         {
             return;
         }
-
-        if (isConnecting)
-        {
-            return;
-        }
-
-        //还有数据在发送
-        //if (writeQueue.Count > 0)
-        //{
-        //    isClosing = true;
-        //}
-        //没有数据在发送
-        //else
-        //{
-       
+        
         socket.Close();
         
-        //    FireEvent(NetEvent.Close, "");
-        //}
+      
     }
 
-    //发送数据
-    //public static void Send(MsgBase msg)
-    //{
-    //	//状态判断
-    //	if (socket == null || !socket.Connected)
-    //	{
-    //		return;
-    //	}
-    //	if (isConnecting)
-    //	{
-    //		return;
-    //	}
-    //	if (isClosing)
-    //	{
-    //		return;
-    //	}
-    //	//数据编码
-    //	byte[] nameBytes = MsgBase.EncodeName(msg);
-    //	byte[] bodyBytes = MsgBase.Encode(msg);
-    //	int len = nameBytes.Length + bodyBytes.Length;
-    //	byte[] sendBytes = new byte[2 + len];
-    //	//组装长度
-    //	sendBytes[0] = (byte)(len % 256);
-    //	sendBytes[1] = (byte)(len / 256);
-    //	//组装名字
-    //	Array.Copy(nameBytes, 0, sendBytes, 2, nameBytes.Length);
-    //	//组装消息体
-    //	Array.Copy(bodyBytes, 0, sendBytes, 2 + nameBytes.Length, bodyBytes.Length);
-    //	//写入队列
-    //	ByteArray ba = new ByteArray(sendBytes);
-    //	int count = 0;  //writeQueue的长度
-    //	lock (writeQueue)
-    //	{
-    //		writeQueue.Enqueue(ba);
-    //		count = writeQueue.Count;
-    //	}
-    //	//send
-    //	if (count == 1)
-    //	{
-    //		socket.BeginSend(sendBytes, 0, sendBytes.Length,
-    //			0, SendCallback, socket);
-    //	}
-    //}
-
-    //Send回调
-    //public static void SendCallback(IAsyncResult ar)
-    //{
-
-    //	//获取state、EndSend的处理
-    //	Socket socket = (Socket)ar.AsyncState;
-    //	//状态判断
-    //	if (socket == null || !socket.Connected)
-    //	{
-    //		return;
-    //	}
-    //	//EndSend
-    //	int count = socket.EndSend(ar);
-    //	//获取写入队列第一条数据            
-    //	ByteArray ba;
-    //	lock (writeQueue)
-    //	{
-    //		ba = writeQueue.First();
-    //	}
-    //	//完整发送
-    //	ba.readIdx += count;
-    //	if (ba.length == 0)
-    //	{
-    //		lock (writeQueue)
-    //		{
-    //			writeQueue.Dequeue();
-    //			ba = writeQueue.First();
-    //		}
-    //	}
-    //	//继续发送
-    //	if (ba != null)
-    //	{
-    //		socket.BeginSend(ba.bytes, ba.readIdx, ba.length,
-    //			0, SendCallback, socket);
-    //	}
-    //	//正在关闭
-    //	else if (isClosing)
-    //	{
-    //		socket.Close();
-    //	}
-    //}
+ 
 
 
     //Receive回调
@@ -260,6 +167,7 @@ public class ClientManager
                 
                 var data = new byte[bytesRead];
                 Array.Copy(buffer,data,bytesRead);
+                _channel.RecMsg(data);
                 // IRequest request = MemoryPackHelper.DeserializeObject<IRequest>(data);
                 // Debug.Log(request.RpcId);
                 // if(request.RpcId ==1)
@@ -268,10 +176,10 @@ public class ClientManager
                 //     Debug.Log("id"+ s2CLoginMsg.RpcId +"error:"+s2CLoginMsg.Error +"msg:"+s2CLoginMsg.Message);
                 // }
                 // else
-                {
-                    C2C_SendMsg c2CSendMsg =  MemoryPackHelper.DeserializeObject<C2C_SendMsg>(data);
-                    Debug.Log("id"+c2CSendMsg.RpcId + "msg:"+c2CSendMsg.msg);
-                }
+                // {
+                //     C2C_SendMsg c2CSendMsg =  MemoryPackHelper.DeserializeObject<C2C_SendMsg>(data);
+                //     Debug.Log("id"+c2CSendMsg.RpcId + "msg:"+c2CSendMsg.msg);
+                // }
               
                 // Debug.Log(Encoding.UTF8.GetString(buffer,0,bytesRead));
                 /*GetString(state.buffer, 0, bytesRead)
@@ -312,6 +220,11 @@ public class ClientManager
     //发送数据
     public  void Send(byte[] sendbuf)
     {
+        //状态判断
+        if (socket == null || !socket.Connected)
+        {
+        	return;
+        }
         socket.BeginSend(sendbuf, 0, sendbuf.Length, 0, null, null);  
     }
 
@@ -341,9 +254,89 @@ public class ClientManager
         }
     }
  
+    /// <summary>
+    /// 各种消息的处理
+    /// </summary>
+    /// <param name="msgType"></param>
+    /// <param name="data"></param>
+    private void MsgHandler(MsgType msgType,byte[] datas)
+    {
+        if(_msgDic.ContainsKey(msgType))
+        {
+            _msgDic[msgType](datas);
+        }
+        
+        // switch(msgType)
+        // {
+        //
+        //     case MsgType.C2S_LoginMsg:
+        //     {
+        //         C2S_LoginMsg c2SLoginMsg = MemoryPackHelper.DeserializeObject<C2S_LoginMsg>(datas);
+        //         Debug.Log(c2SLoginMsg.RpcId);
+        //         Debug.Log(c2SLoginMsg.Account);
+        //         Debug.Log(c2SLoginMsg.Password);
+        //     }
+        //     break;
+        //
+        //     case MsgType.S2C_LoginMsg:
+        //     {
+        //        
+        //         S2C_LoginMsg s2CLoginMsg = MemoryPackHelper.DeserializeObject<S2C_LoginMsg>(datas);
+        //        
+        //         Debug.Log(s2CLoginMsg.RpcId);
+        //         Debug.Log(s2CLoginMsg.Message);
+        //         Debug.Log(s2CLoginMsg.Error);
+				    //
+				    //
+        //
+        //     }
+        //         break;
+        //     case MsgType.C2S_SendMsg:
+        //     {
+				    //
+        //     }
+        //         break;
+			     //
+			     //
+			     //
+        // }
+    }
 
+    /// <summary>
+    /// 添加事件
+    /// </summary>
+    /// <param name="msgType"></param>
+    /// <param name="eventMsg"></param>
+    public void AddMsgDic(MsgType msgType,Action<byte[]> eventMsg)
+    {
+        if(_msgDic.ContainsKey(msgType))
+        {
+            _msgDic[msgType] += eventMsg;
+        }
+        
+        
+    }
+    
+    /// <summary>
+    /// 移除事件
+    /// </summary>
+    /// <param name="msgType"></param>
+    /// <param name="eventMsg"></param>
+    public void RemMsgDic(MsgType msgType, Action<byte[]> eventMsg)
+    {
+        if(_msgDic.ContainsKey(msgType))
+        {
+            _msgDic[msgType] -= eventMsg;
+        }
+        if(_msgDic[msgType] == null)
+        {
+            _msgDic.Remove(msgType);
+        }
+    }
 
-    
-    
+    public void RecMsg(byte[] data)
+    {
+        _channel.RecMsg(data);
+    }
     
 }
