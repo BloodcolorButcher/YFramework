@@ -6,7 +6,20 @@ using UnityEngine;
 
 public class ClientManager
 {
-	
+    private static ClientManager instance = null;
+
+    public static ClientManager Instance
+    {
+        get
+        {
+            if(instance == null)
+            {
+                instance = new ClientManager();
+            }
+            return instance;
+        }
+    }
+    
  //定义套接字
     static Socket socket;
 
@@ -42,7 +55,7 @@ public class ClientManager
     ////上一次收到PONG的时间
     //static float lastPongTime = 0;
 
-    public ClientManager()
+    private ClientManager()
     {
         _channel = new TcpChannel();
         _channel.MsgEvent += MsgHandler;

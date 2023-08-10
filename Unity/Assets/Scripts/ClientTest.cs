@@ -4,8 +4,12 @@ using UnityEngine;
 
 public class ClientTest : MonoBehaviour
 {
-  
-    
+
+    private void Start()
+    {
+        
+    }
+
 
     // Update is called once per frame
     void Update()
@@ -17,7 +21,7 @@ public class ClientTest : MonoBehaviour
             var datas = YYProtolcol.TcpProtocol.MsgToBytes((int)MsgType.C2S_LoginMsg, data);
             Debug.Log(string.Join(" ",datas));
          
-            ClientController.Instance.Send(datas);
+            GameManager.ClientManager.Send(datas);
             // ClientController.Instance.RecMsg(datas);
             
             
@@ -29,6 +33,8 @@ public class ClientTest : MonoBehaviour
             
            
             var data = MemoryPackHelper.Serialize(c2CSendMsg); 
+            var datas = YYProtolcol.TcpProtocol.MsgToBytes((int)MsgType.C2S_LoginMsg, data);
+            GameManager.ClientManager.Send(datas);
             // ClientManager.Send(data);
         }
     }
