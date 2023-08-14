@@ -7,7 +7,8 @@ public class ClientTest : MonoBehaviour
 
     private void Start()
     {
-        
+        GameManager.ClientManager.AddMsgDic(MsgType.S2C_LoginMsg,RecLoginMsg);
+        GameManager.ClientManager.AddMsgDic(MsgType.S2C_LoginMsg,RecLoginMsg2);
     }
 
 
@@ -16,7 +17,8 @@ public class ClientTest : MonoBehaviour
     {
         if(Input.GetKeyDown(KeyCode.W))
         {
-            C2S_LoginMsg c2SLoginMsg = new C2S_LoginMsg() {RpcId = 1, Account = "yangyue", Password = "yangyue2" };
+           
+            C2S_LoginMsg c2SLoginMsg = new C2S_LoginMsg() {RpcId = 1, Account = "yangyue", Password = "yangyue" };
             var data = MemoryPackHelper.Serialize(c2SLoginMsg);
             var datas = YYProtolcol.TcpProtocol.MsgToBytes((int)MsgType.C2S_LoginMsg, data);
             Debug.Log(string.Join(" ",datas));
@@ -24,19 +26,53 @@ public class ClientTest : MonoBehaviour
             GameManager.ClientManager.Send(datas);
             // ClientController.Instance.RecMsg(datas);
             
-            
+           
         }
        
         if(Input.GetKeyDown(KeyCode.S))
         {
-            C2C_SendMsg c2CSendMsg = new C2C_SendMsg() { RpcId = 2, msg = "111222" };
             
-           
-            var data = MemoryPackHelper.Serialize(c2CSendMsg); 
+            C2S_LoginMsg c2SLoginMsg = new C2S_LoginMsg() {RpcId = 1, Account = "yangyue", Password = "yangyue2" };
+            var data = MemoryPackHelper.Serialize(c2SLoginMsg);
             var datas = YYProtolcol.TcpProtocol.MsgToBytes((int)MsgType.C2S_LoginMsg, data);
+            Debug.Log(string.Join(" ",datas));
+         
             GameManager.ClientManager.Send(datas);
             // ClientManager.Send(data);
         }
     }
+
+    private void RecLoginMsg(byte[] datas)
+    {
+        Debug.Log("触发了消息");
+        S2C_LoginMsg s2CLoginMsg = MemoryPackHelper.DeserializeObject<S2C_LoginMsg>(datas);
+        if(s2CLoginMsg!=null)
+        {
+            Debug.Log(s2CLoginMsg.RpcId);
+            Debug.Log(s2CLoginMsg.Message);
+            Debug.Log(s2CLoginMsg.Error);
+        }  
+        GameManager.ClientManager.RemMsgDic(MsgType.S2C_LoginMsg,RecLoginMsg);
+        
+    }
+    
+    private void RecLoginMsg2(byte[] datas)
+    {
+        Debug.Log("触发了消息");
+        S2C_LoginMsg s2CLoginMsg = MemoryPackHelper.DeserializeObject<S2C_LoginMsg>(datas);
+        if(s2CLoginMsg!=null)
+        {
+            Debug.Log(s2CLoginMsg.RpcId);
+            Debug.Log(s2CLoginMsg.Message);
+            Debug.Log(s2CLoginMsg.Error);
+        }  
+        GameManager.ClientManager.RemMsgDic(MsgType.S2C_LoginMsg,RecLoginMsg2);
+        
+    }
+    
+    
+    
+    
+    
 
 }

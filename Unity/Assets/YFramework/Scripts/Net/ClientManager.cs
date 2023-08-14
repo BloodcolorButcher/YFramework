@@ -274,9 +274,15 @@ public class ClientManager
     /// <param name="data"></param>
     private void MsgHandler(MsgType msgType,byte[] datas)
     {
+        Debug.Log(msgType);
         if(_msgDic.ContainsKey(msgType))
         {
-            _msgDic[msgType](datas);
+            Debug.Log("已经注册了消息");
+            _msgDic[msgType]?.Invoke(datas);
+        }
+        else
+        {
+            Debug.Log("没有处理这个消息的地方");
         }
         
         // switch(msgType)
@@ -326,6 +332,11 @@ public class ClientManager
         {
             _msgDic[msgType] += eventMsg;
         }
+        else
+        {
+            _msgDic.Add(msgType,eventMsg);
+            // _msgDic[msgType] += eventMsg;
+        }
         
         
     }
@@ -343,6 +354,7 @@ public class ClientManager
         }
         if(_msgDic[msgType] == null)
         {
+            Debug.Log("为空移除了");
             _msgDic.Remove(msgType);
         }
     }
