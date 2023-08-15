@@ -19,7 +19,7 @@ public class UniTaskTest : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        m_questBtn.onClick.AddListener(RequsetEvent);
+        m_questBtn.onClick.AddListener(QuestBtnClicked);
         m_responseBtn.onClick.AddListener(ResponseBtnClicked);
         m_cancelBtn.onClick.AddListener(CancelBtnClicked);
     }
@@ -37,7 +37,8 @@ public class UniTaskTest : MonoBehaviour
 
     private void QuestBtnClicked()
     {
-        // m_text.text = "请求事件";
+        m_text.text = "请求事件";
+        RequsetEvent();
         // UniTask.CompletedTask( RequsetEvent());
     }
     private void ResponseBtnClicked()
@@ -58,22 +59,63 @@ public class UniTaskTest : MonoBehaviour
     private async void RequsetEvent()
     {
         stop = 0;
-        // _cts = new CancellationTokenSource();
-        // _cts.CancelAfterSlim(TimeSpan.FromSeconds(5)); // 5sec timeout.
-        bool isComplete = await Request();
+        _cts = new CancellationTokenSource();
+        _cts.CancelAfterSlim(TimeSpan.FromSeconds(5)); // 5sec timeout.
+     
+        // await UnityWebRequest.Get("http://foo").SendWebRequest().WithCancellation(_cts.Token);
+        bool isCanceled = await  Request(_cts.Token).SuppressCancellationThrow();
+        // bool isCanceled = await  Request().TimeoutWithoutException(TimeSpan.FromSeconds(5));
 
-        if(isComplete)
+        if(isCanceled)
         {
-           Debug.Log("完成了监听"); 
+            Debug.Log("取消了");
+          
+        }
+        else
+        {
+            Debug.Log("完成了监听"); 
         }
     }
-    async UniTask<bool> Request()
+    async UniTask Request()
     {
         //()=>
        
         // await UniTask.WaitForFixedUpdate(cancellationToken);
-        await UniTask.WaitUntil(()=>stop ==-1);
-        return true;
+       
+        await UniTask.WaitUntil(()=>
+        {
+            Debug.Log("等待中");
+            return stop == -1;
+           
+            
+        }
+            );
+        // WaitUntil拓展，指定某个值改变时触发
+        // await UniTask.WaitUntilValueChanged(this, x =>
+        // {
+        //     return x.stop;
+        // });
+    }
+    
+    async UniTask Request(CancellationToken cancellationToken)
+    {
+        //()=>
+       
+        // await UniTask.WaitForFixedUpdate(cancellationToken);
+       
+        await UniTask.WaitUntil(()=>
+            {
+                Debug.Log("等待中");
+                return stop == -1;
+           
+            
+            },PlayerLoopTiming.Update,cancellationToken
+        );
+        // WaitUntil拓展，指定某个值改变时触发
+        // await UniTask.WaitUntilValueChanged(this, x =>
+        // {
+        //     return x.stop;
+        // });
     }
     
 }
