@@ -7,6 +7,12 @@ using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
 
+public struct MyStruct
+{
+    public int Num;
+    public string Name;
+}
+
 public class UniTaskTest : MonoBehaviour
 {
     [SerializeField]
@@ -19,6 +25,10 @@ public class UniTaskTest : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        MyStruct myStruct = new MyStruct() { Name = "yy", Num = 43 };
+        MyStruct myStruct2 = myStruct;
+        Debug.Log(myStruct2.Name);
+        Debug.Log(myStruct2.Num);
         m_questBtn.onClick.AddListener(QuestBtnClicked);
         m_responseBtn.onClick.AddListener(ResponseBtnClicked);
         m_cancelBtn.onClick.AddListener(CancelBtnClicked);
@@ -62,19 +72,36 @@ public class UniTaskTest : MonoBehaviour
         _cts = new CancellationTokenSource();
         _cts.CancelAfterSlim(TimeSpan.FromSeconds(5)); // 5sec timeout.
      
-        // await UnityWebRequest.Get("http://foo").SendWebRequest().WithCancellation(_cts.Token);
-        bool isCanceled = await  Request(_cts.Token).SuppressCancellationThrow();
-        // bool isCanceled = await  Request().TimeoutWithoutException(TimeSpan.FromSeconds(5));
-
-        if(isCanceled)
+        // var request = await UnityWebRequest.Get("http://foo").SendWebRequest().WithCancellation(_cts.Token);
+        //
+        // if(request.error)
+        // {
+        //     
+        // }
+        //var cancelTask = UniTask.Delay(TimeSpan.FromSeconds(1), cancellationToken: cts.Token);
+        //var cancelTask = UniTask.Delay(TimeSpan.FromSeconds(1), cancellationToken: cts.Token);
+        int index = await UniTask.WhenAny(Request(),  UniTask.Delay(TimeSpan.FromSeconds(5)));
+        if(index ==0)
         {
-            Debug.Log("取消了");
-          
+            Debug.Log("完成请求");
         }
         else
         {
-            Debug.Log("完成了监听"); 
+            Debug.Log("请求超时");
         }
+
+        //等待   
+        // bool isCanceled = await  Request(_cts.Token).SuppressCancellationThrow();
+        // bool isCanceled = await  Request().TimeoutWithoutException(TimeSpan.FromSeconds(5));
+        // if(isCanceled)
+        // {
+        //     Debug.Log("取消了");
+        //   
+        // }
+        // else
+        // {
+        //     Debug.Log("完成了监听"); 
+        // }
     }
     async UniTask Request()
     {
