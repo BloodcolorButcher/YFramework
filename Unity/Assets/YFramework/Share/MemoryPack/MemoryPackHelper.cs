@@ -1,4 +1,6 @@
+using System;
 using MemoryPack;
+using UnityEngine;
 
 /// <summary>
 /// 需要序列化与反序列化
@@ -24,7 +26,19 @@ public static class MemoryPackHelper
 	/// <returns></returns>
 	public static T DeserializeObject<T>(byte[] data)
 	{
-		T t = MemoryPackSerializer.Deserialize<T>(data);
-		return t;
+
+		try
+		{
+			T t = MemoryPackSerializer.Deserialize<T>(data);
+			return t;
+		}
+		catch (Exception e)
+		{
+			
+		}
+		return default(T);
+		
+		
+		
 	}
 }
