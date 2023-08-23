@@ -13,6 +13,8 @@ public class GameManager : MonoBehaviour
     private int port = 8888;
 
     public static ClientManager ClientManager => ClientManager.Instance;
+
+    private int i = 5;
     private void Awake()
     {
         Instance = this;
@@ -21,12 +23,15 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         ClientManager.Connect(ip,port);
+        Debug.Log(TimerSystem.Instance.Timestamp());
+        Debug.Log(long.MaxValue);
+        TimerSystem.Instance.Schedule(obj => { Debug.Log("执行回调方法"+i); },null,false,3,2,5);
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+        TimerSystem.Instance.Updata();
     }
     void FixedUpdate()
     {

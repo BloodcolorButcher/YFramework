@@ -7,7 +7,8 @@ public class ClientTest : MonoBehaviour
 
     private void Start()
     {
-      
+        MsgHelper<S2C_LoginMsg> msgHelper = new MsgHelper<S2C_LoginMsg>();
+        msgHelper.Bind(RecLoginMsg);
         // GameManager.ClientManager.AddMsgDic(MsgType.S2C_LoginMsg,RecLoginMsg2);
     }
 
@@ -53,6 +54,24 @@ public class ClientTest : MonoBehaviour
             Debug.Log(s2CLoginMsg.Error);
         }  
         GameManager.ClientManager.RemMsgDic(MsgType.S2C_LoginMsg,RecLoginMsg);
+        
+    }
+    private void RecLoginMsg(S2C_LoginMsg s2CLoginMsg)
+    {
+        // Debug.Log("触发了消息");
+        // datas = new byte[] { 1, 2, 3 };
+        // S2C_LoginMsg s2CLoginMsg = MemoryPackHelper.DeserializeObject<S2C_LoginMsg>(datas);
+        // if(s2CLoginMsg!=null)
+        // {
+        //     Debug.Log(s2CLoginMsg.RpcId);
+        //     Debug.Log(s2CLoginMsg.Message);
+        //     Debug.Log(s2CLoginMsg.Error);
+        // }
+        // else
+        // {
+        //     Debug.Log("解析错误");
+        // }
+        GameManager.ClientManager.RemMsgDic(MsgType.S2C_LoginMsg,RecLoginMsg2);
         
     }
     
