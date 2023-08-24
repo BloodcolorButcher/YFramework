@@ -1,6 +1,5 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
+
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
@@ -48,7 +47,8 @@ public class UniTaskTest : MonoBehaviour
     private void QuestBtnClicked()
     {
         m_text.text = "请求事件";
-        RequsetEvent();
+        // RequsetEvent();
+        DoSomeThing();
         // UniTask.CompletedTask( RequsetEvent());
     }
     private void ResponseBtnClicked()
@@ -65,6 +65,25 @@ public class UniTaskTest : MonoBehaviour
         
     }
 
+    private async void DoSomeThing()
+    {
+        // Debug.Log(1);
+        // await UniTask.Delay(1000);
+        // Debug.Log(2);
+        // await UniTask.Delay(1000);
+        // Debug.Log(3);
+        await DoSomeThing2();
+        // Debug.Log("第二次调用");
+        // await DoSomeThing2();
+    }
+    
+    private async UniTask DoSomeThing2()
+    {
+        var task = UniTask.DelayFrame(10);
+        await  task.ToAsyncLazy();
+        await task.ToAsyncLazy(); // 寄了, 抛出异常
+    }
+    
     
     private async void RequsetEvent()
     {
@@ -72,7 +91,7 @@ public class UniTaskTest : MonoBehaviour
         _cts = new CancellationTokenSource();
         _cts.CancelAfterSlim(TimeSpan.FromSeconds(5)); // 5sec timeout.
      
-        // var request = await UnityWebRequest.Get("http://foo").SendWebRequest().WithCancellation(_cts.Token);
+         var request = await UnityWebRequest.Get("http://foo").SendWebRequest().WithCancellation(_cts.Token);
         //
         // if(request.error)
         // {
@@ -113,8 +132,6 @@ public class UniTaskTest : MonoBehaviour
         {
             Debug.Log("等待中");
             return stop == -1;
-           
-            
         }
             );
         // WaitUntil拓展，指定某个值改变时触发
