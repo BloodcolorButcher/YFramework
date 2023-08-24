@@ -7,9 +7,7 @@ public class ClientTest : MonoBehaviour
 
     private void Start()
     {
-        MsgHelper<S2C_LoginMsg> msgHelper = new MsgHelper<S2C_LoginMsg>();
-        msgHelper.Bind(RecLoginMsg);
-        // GameManager.ClientManager.AddMsgDic(MsgType.S2C_LoginMsg,RecLoginMsg2);
+        
     }
 
 
@@ -18,16 +16,9 @@ public class ClientTest : MonoBehaviour
     {
         if(Input.GetKeyDown(KeyCode.W))
         {
-            GameManager.ClientManager.AddMsgDic(MsgType.S2C_LoginMsg,RecLoginMsg2);
-            C2S_LoginMsg c2SLoginMsg = new C2S_LoginMsg() {RpcId = 1, Account = "yangyue", Password = "yangyue" };
-            var data = MemoryPackHelper.Serialize(c2SLoginMsg);
-            var datas = YYProtolcol.TcpProtocol.MsgToBytes((int)MsgType.C2S_LoginMsg, data);
-            Debug.Log(string.Join(" ",datas));
-         
-            GameManager.ClientManager.Send(datas);
+            // GameManager.ClientManager.AddMsgDic(MsgType.S2C_LoginMsg,RecLoginMsg2);
+            QuestEvent();
             // ClientController.Instance.RecMsg(datas);
-            
-           
         }
        
         if(Input.GetKeyDown(KeyCode.S))
@@ -40,6 +31,36 @@ public class ClientTest : MonoBehaviour
          
             GameManager.ClientManager.Send(datas);
             // ClientManager.Send(data);
+        }
+    }
+
+    public async void QuestEvent()
+    {
+        C2S_LoginMsg c2SLoginMsg = new C2S_LoginMsg() {RpcId = 1, Account = "yangyue", Password = "yangyue" };
+        var data = MemoryPackHelper.Serialize(c2SLoginMsg);
+        var datas = YYProtolcol.TcpProtocol.MsgToBytes((int)MsgType.C2S_LoginMsg, data);
+        byte[] bytes = await new MsgHelper().SendRequest(() =>
+            {
+                Debug.Log(string.Join(" ", datas));
+                //发送消息
+                GameManager.ClientManager.Send(datas);
+            },
+            2000, 3, MsgType.S2C_LoginMsg);
+
+        if(bytes==null)
+        {
+            Debug.LogWarning("请求超时");
+        }
+        else
+        {
+            Debug.Log("成功收到了消息");
+            S2C_LoginMsg s2CLoginMsg = MemoryPackHelper.DeserializeObject<S2C_LoginMsg>(bytes);
+            if(s2CLoginMsg!=null)
+            {
+                Debug.Log(s2CLoginMsg.RpcId);
+                Debug.Log(s2CLoginMsg.Message);
+                Debug.Log(s2CLoginMsg.Error);
+            }  
         }
     }
 

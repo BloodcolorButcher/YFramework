@@ -31,6 +31,26 @@ public static class YYProtolcol
 				return stream.ToArray();
 			}	
 		}
+		
+		/// <summary>
+		/// 消息转换成byte[]
+		/// </summary>
+		/// <param name="msgType"></param>
+		/// <param name="data"></param>
+		/// <returns></returns>
+		public static byte[] MsgToBytes(int msgType)
+		{
+			byte[] data = new byte[0];
+			using (MemoryStream stream = new MemoryStream())
+			{
+				int len = data.Length+2;
+				//填入数据长度
+				stream.Write(Num2Bytes(len));
+				stream.Write(Num2Bytes(msgType));
+				stream.Write(data);
+				return stream.ToArray();
+			}	
+		}
 	}
 	
 	

@@ -36,6 +36,7 @@ public class UniTaskTest : MonoBehaviour
     {
         if(_cts != null)
         {
+            _cts.Cancel();
             m_text.text += "取消成功";
         }
         else
@@ -47,8 +48,8 @@ public class UniTaskTest : MonoBehaviour
     private void QuestBtnClicked()
     {
         m_text.text = "请求事件";
-        // RequsetEvent();
-        DoSomeThing();
+         RequsetEvent();
+        // DoSomeThing();
         // UniTask.CompletedTask( RequsetEvent());
     }
     private void ResponseBtnClicked()
@@ -90,8 +91,9 @@ public class UniTaskTest : MonoBehaviour
         stop = 0;
         _cts = new CancellationTokenSource();
         _cts.CancelAfterSlim(TimeSpan.FromSeconds(5)); // 5sec timeout.
-     
-         var request = await UnityWebRequest.Get("http://foo").SendWebRequest().WithCancellation(_cts.Token);
+        var _cts2 = new CancellationTokenSource();
+        var linCancelToken = CancellationTokenSource.CreateLinkedTokenSource(_cts.Token, _cts2.Token);
+         // var request = await UnityWebRequest.Get("http://foo").SendWebRequest().WithCancellation(_cts.Token);
         //
         // if(request.error)
         // {
@@ -120,6 +122,7 @@ public class UniTaskTest : MonoBehaviour
         }
         else
         {
+            _cts.Cancel();_cts.Dispose();
             Debug.Log("完成了监听"); 
         }
     }
@@ -168,16 +171,11 @@ public class UniTaskTest : MonoBehaviour
         //()=>
        
         // await UniTask.WaitForFixedUpdate(cancellationToken);
-        if (!cancellationToken.IsCancellationRequested)
-        {
-            Debug.Log("第一次发送");
-        }
-        
+       
+        Debug.Log("第一次发送");
         await UniTask.Delay(1000, DelayType.DeltaTime,PlayerLoopTiming.Update,cancellationToken);
-        if (!cancellationToken.IsCancellationRequested)
         Debug.Log("第二次发送");
         await UniTask.Delay(1000, DelayType.DeltaTime,PlayerLoopTiming.Update,cancellationToken);
-        if (!cancellationToken.IsCancellationRequested)
         Debug.Log("第三次发送");
         // WaitUntil拓展，指定某个值改变时触发
         // await UniTask.WaitUntilValueChanged(this, x =>

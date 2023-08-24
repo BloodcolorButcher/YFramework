@@ -1,6 +1,5 @@
 using System;
 using MemoryPack;
-using UnityEngine;
 
 /// <summary>
 /// 需要序列化与反序列化

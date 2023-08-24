@@ -1,131 +1,86 @@
+using System;
+using System.Threading;
+using Cysharp.Threading.Tasks;
+using UnityEngine;
 
-    using System;
-    using System.Threading;
-    using Cysharp.Threading.Tasks;
-    using UnityEngine;
+public class MsgHelper
+{
+	private CancellationTokenSource _cts = null;
+	byte[] bytes = null;
+	public MsgHelper()
+	{
+		_cts = new CancellationTokenSource();
+	}
+	/// <summary>
+	/// 发送请求 超时时间为请求 间隔时间 请求次数
+	/// </summary>
+	/// <param name="sendEvent"></param>
+	/// <param name="interval">两次发送信息的间隔时间(毫秒)</param>
+	/// <param name="repeat">发送次数</param>
+	/// <param name="recType">取消事件</param>
+	/// <returns></returns>
+	public async UniTask<byte[]> SendRequest(Action sendEvent, int interval, int repeat, MsgType recType)
+	{
 
-    public class MsgHelper<T>
-    {
+		_cts.CancelAfterSlim(interval*repeat);
+		GameManager.ClientManager.AddMsgDic(recType, RecMsg);
+		SendEvent(sendEvent, interval, repeat, _cts.Token).Forget();
+		//等待   
+		bool isCanceled = await WaitCallBack(_cts.Token).SuppressCancellationThrow();
+		// bool isCanceled = await  Request().TimeoutWithoutException(TimeSpan.FromSeconds(5));
+		if(isCanceled)
+		{
+			Debug.Log("超时取消了");
+		}
+		else
+		{
+			_cts.Cancel();
+			Debug.Log("收到了消息");
+		}
+		_cts.Dispose();
+		GameManager.ClientManager.RemMsgDic(recType, RecMsg);
 
-        public MsgHelper()
-        {
-            t = default;
-        }
-        
-        private T t;
-        private int step = 0;
-       
-        public void Bind(Action<T> action)
-        {
-            T t = default;
-            if (t ==null)
-            {
-                Debug.Log("null");
-            }
-            GameManager.ClientManager.AddMsgDic(MsgType.S2C_LoginMsg,RecLoginMsg2);
-            C2S_LoginMsg c2SLoginMsg = new C2S_LoginMsg() {RpcId = 1, Account = "yangyue", Password = "yangyue" };
-            var data = MemoryPackHelper.Serialize(c2SLoginMsg);
-            var datas = YYProtolcol.TcpProtocol.MsgToBytes((int)MsgType.C2S_LoginMsg, data);
-            
-         
-            GameManager.ClientManager.Send(datas);
-        }
-        private CancellationTokenSource _cts = null;
-        private async void RequsetEvent()
-        {
-            _cts = new CancellationTokenSource();
-            _cts.CancelAfterSlim(TimeSpan.FromSeconds(5)); // 5sec timeout.
-     
-            // var request = await UnityWebRequest.Get("http://foo").SendWebRequest().WithCancellation(_cts.Token);
-            //
-            // if(request.error)
-            // {
-            //     
-            // }
-            //var cancelTask = UniTask.Delay(TimeSpan.FromSeconds(1), cancellationToken: cts.Token);
-            //var cancelTask = UniTask.Delay(TimeSpan.FromSeconds(1), cancellationToken: cts.Token);
-            // int index = await UniTask.WhenAny(Request(),  UniTask.Delay(TimeSpan.FromSeconds(5)));
-            // if(index ==0)
-            // {
-            //     Debug.Log("完成请求");
-            // }
-            // else
-            // {
-            //     Debug.Log("请求超时");
-            // }
+		return bytes;
+	}
 
-            //等待   
-            bool isCanceled = await  Request(_cts.Token).SuppressCancellationThrow();
-            // bool isCanceled = await  Request().TimeoutWithoutException(TimeSpan.FromSeconds(5));
-            if(isCanceled)
-            {
-                Debug.Log("取消了");
-          
-            }
-            else
-            {
-                Debug.Log("完成了监听"); 
-            }
-        }
-        
-        async UniTask Request()
-        {
-            //()=>
-       
-            // await UniTask.WaitForFixedUpdate(cancellationToken);
-       
-            await UniTask.WaitUntil(()=>
-                {
-                  
-                    return t != null;
-                    
-                }
-            );
-            // WaitUntil拓展，指定某个值改变时触发
-            // await UniTask.WaitUntilValueChanged(this, x =>
-            // {
-            //     return x.stop;
-            // });
-        }
-        async UniTask Request(CancellationToken cancellationToken)
-        {
-            //()=>
-       
-            // await UniTask.WaitForFixedUpdate(cancellationToken);
-       
-            await UniTask.WaitUntil(()=>
-                {
-                    // Debug.Log("等待中");
-                    return t != null;
-           
-            
-                },PlayerLoopTiming.Update,cancellationToken
-            );
-            // WaitUntil拓展，指定某个值改变时触发
-            // await UniTask.WaitUntilValueChanged(this, x =>
-            // {
-            //     return x.stop;
-            // });
-        }
-        
-        private void RecLoginMsg2(byte[] datas)
-        {
-            Debug.Log("触发了消息");
-            try
-            {
-                t = MemoryPackHelper.DeserializeObject<T>(datas);
-            }
-            catch (Exception e)
-            {
-                Debug.Log(e);
-                throw;
-            }
-            GameManager.ClientManager.RemMsgDic(MsgType.S2C_LoginMsg,RecLoginMsg2);
-        
-        }
-    }
-    
-    //unitask 方法
-    
-    //超时器
-    
+	/// <summary>
+	/// 重复执行的请求
+	/// </summary>
+	/// <param name="sendEvent">请求的具体内容</param>
+	/// <param name="interval">请求的时间间隔</param>
+	/// <param name="repeat">重复次数</param>
+	/// <param name="cancellationToken">取消的协议</param>
+	async UniTask SendEvent(Action sendEvent, int interval, int repeat, CancellationToken cancellationToken)
+	{
+		for( int i = 0; i < repeat; i++ )
+		{
+			sendEvent?.Invoke();
+			await UniTask.Delay(interval, DelayType.DeltaTime, PlayerLoopTiming.Update, cancellationToken);
+		}
+
+	}
+
+
+	/// <summary>
+	/// 等待回复
+	/// </summary>
+	/// <param name="cancellationToken">超时令牌</param>
+	async UniTask WaitCallBack(CancellationToken cancellationToken)
+	{
+		await UniTask.WaitUntil(() =>
+			{
+				// Debug.Log("等待中");
+				return bytes != null;
+			},
+			PlayerLoopTiming.Update,
+			cancellationToken
+			);
+
+	}
+
+	private void RecMsg(byte[] datas)
+	{
+		bytes = datas;
+
+	}
+}

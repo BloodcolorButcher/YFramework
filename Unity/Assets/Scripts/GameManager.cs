@@ -23,15 +23,15 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         ClientManager.Connect(ip,port);
-        Debug.Log(TimerSystem.Instance.Timestamp());
-        Debug.Log(long.MaxValue);
-        TimerSystem.Instance.Schedule(obj => { Debug.Log("执行回调方法"+i); },null,false,3,2,5);
+        // Debug.Log(TimerSystem.Instance.Timestamp());
+        // Debug.Log(long.MaxValue);
+        // TimerSystem.Instance.Schedule(obj => { Debug.Log("执行回调方法"+i); },null,false,3,2,5);
     }
 
     // Update is called once per frame
     void Update()
     {
-        TimerSystem.Instance.Updata();
+        // TimerSystem.Instance.Updata();
     }
     void FixedUpdate()
     {
