@@ -64,7 +64,7 @@ public class ClientState
 				var msg = MemoryPackHelper.Serialize(s2CLoginMsg);
 				var bytes = YYProtolcol.TcpProtocol.MsgToBytes((int)MsgType.S2C_LoginMsg,msg);
 				
-				SendMsg(bytes);
+				// SendMsg(bytes);
 
 			}
 				break;
