@@ -99,28 +99,29 @@ public class UniTaskTest : MonoBehaviour
         // }
         //var cancelTask = UniTask.Delay(TimeSpan.FromSeconds(1), cancellationToken: cts.Token);
         //var cancelTask = UniTask.Delay(TimeSpan.FromSeconds(1), cancellationToken: cts.Token);
-        int index = await UniTask.WhenAny(Request(),  UniTask.Delay(TimeSpan.FromSeconds(5)));
-        if(index ==0)
-        {
-            Debug.Log("完成请求");
-        }
-        else
-        {
-            Debug.Log("请求超时");
-        }
-
-        //等待   
-        // bool isCanceled = await  Request(_cts.Token).SuppressCancellationThrow();
-        // bool isCanceled = await  Request().TimeoutWithoutException(TimeSpan.FromSeconds(5));
-        // if(isCanceled)
+        // int index = await UniTask.WhenAny(Request(),  UniTask.Delay(TimeSpan.FromSeconds(5)));
+        // if(index ==0)
         // {
-        //     Debug.Log("取消了");
-        //   
+        //     Debug.Log("完成请求");
         // }
         // else
         // {
-        //     Debug.Log("完成了监听"); 
+        //     Debug.Log("请求超时");
         // }
+
+        Request2(_cts.Token).Forget();
+        //等待   
+        bool isCanceled = await  Request(_cts.Token).SuppressCancellationThrow();
+         // bool isCanceled = await  Request().TimeoutWithoutException(TimeSpan.FromSeconds(5));
+        if(isCanceled)
+        {
+            Debug.Log("取消了");
+          
+        }
+        else
+        {
+            Debug.Log("完成了监听"); 
+        }
     }
     async UniTask Request()
     {
@@ -155,6 +156,29 @@ public class UniTaskTest : MonoBehaviour
             
             },PlayerLoopTiming.Update,cancellationToken
         );
+        // WaitUntil拓展，指定某个值改变时触发
+        // await UniTask.WaitUntilValueChanged(this, x =>
+        // {
+        //     return x.stop;
+        // });
+    }
+    
+    async UniTask Request2(CancellationToken cancellationToken)
+    {
+        //()=>
+       
+        // await UniTask.WaitForFixedUpdate(cancellationToken);
+        if (!cancellationToken.IsCancellationRequested)
+        {
+            Debug.Log("第一次发送");
+        }
+        
+        await UniTask.Delay(1000, DelayType.DeltaTime,PlayerLoopTiming.Update,cancellationToken);
+        if (!cancellationToken.IsCancellationRequested)
+        Debug.Log("第二次发送");
+        await UniTask.Delay(1000, DelayType.DeltaTime,PlayerLoopTiming.Update,cancellationToken);
+        if (!cancellationToken.IsCancellationRequested)
+        Debug.Log("第三次发送");
         // WaitUntil拓展，指定某个值改变时触发
         // await UniTask.WaitUntilValueChanged(this, x =>
         // {
