@@ -9,7 +9,7 @@ public class GameManager : MonoBehaviour
 
     
     //ip和地址
-    private string ip = "127.0.0.1";
+    private string ip = "192.168.100.39";
     private int port = 8888;
 
     public static ClientManager ClientManager => ClientManager.Instance;

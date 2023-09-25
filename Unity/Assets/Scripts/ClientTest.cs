@@ -39,6 +39,10 @@ public class ClientTest : MonoBehaviour
         C2S_LoginMsg c2SLoginMsg = new C2S_LoginMsg() {RpcId = 1, Account = "yangyue", Password = "yangyue" };
         var data = MemoryPackHelper.Serialize(c2SLoginMsg);
         var datas = YYProtolcol.TcpProtocol.MsgToBytes((int)MsgType.C2S_LoginMsg, data);
+        
+        
+        
+        
         byte[] bytes = await new MsgHelper().SendRequest(() =>
             {
                 Debug.Log(string.Join(" ", datas));
